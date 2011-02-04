@@ -1,0 +1,5 @@
+QuotesDB/bin/*
+QuotesDB/obj/*
+*.suo
+*.user
+_Resharper*

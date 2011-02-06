@@ -51,6 +51,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=2.0.38.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,6 +82,12 @@
     <Compile Include="AddQuote.Designer.cs">
       <DependentUpon>AddQuote.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditQuote.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditQuote.Designer.cs">
+      <DependentUpon>EditQuote.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sqlite.cs" />
     <Compile Include="DataInterface.cs" />
     <Compile Include="MainWin.cs">
@@ -89,6 +104,9 @@
     <EmbeddedResource Include="AddQuote.resx">
       <DependentUpon>AddQuote.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditQuote.resx">
+      <DependentUpon>EditQuote.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWin.resx">
       <DependentUpon>MainWin.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +120,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

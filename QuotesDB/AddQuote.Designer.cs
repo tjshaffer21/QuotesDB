@@ -32,10 +32,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.authorText = new System.Windows.Forms.TextBox();
+            this.locText = new System.Windows.Forms.TextBox();
+            this.tagsText = new System.Windows.Forms.TextBox();
+            this.quoteText = new System.Windows.Forms.RichTextBox();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -76,38 +76,38 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "Tags:";
             // 
-            // textBox1
+            // authorText
             // 
-            this.textBox1.Location = new System.Drawing.Point(63, 13);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(326, 20);
-            this.textBox1.TabIndex = 4;
+            this.authorText.Location = new System.Drawing.Point(63, 13);
+            this.authorText.Name = "authorText";
+            this.authorText.Size = new System.Drawing.Size(326, 20);
+            this.authorText.TabIndex = 4;
             // 
-            // textBox2
+            // locText
             // 
-            this.textBox2.Location = new System.Drawing.Point(63, 40);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(326, 20);
-            this.textBox2.TabIndex = 5;
+            this.locText.Location = new System.Drawing.Point(63, 40);
+            this.locText.Name = "locText";
+            this.locText.Size = new System.Drawing.Size(326, 20);
+            this.locText.TabIndex = 5;
             // 
-            // textBox4
+            // tagsText
             // 
-            this.textBox4.Location = new System.Drawing.Point(63, 127);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(326, 20);
-            this.textBox4.TabIndex = 7;
+            this.tagsText.Location = new System.Drawing.Point(63, 127);
+            this.tagsText.Name = "tagsText";
+            this.tagsText.Size = new System.Drawing.Size(326, 20);
+            this.tagsText.TabIndex = 7;
             // 
-            // richTextBox1
+            // quoteText
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(63, 70);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(326, 51);
-            this.richTextBox1.TabIndex = 8;
-            this.richTextBox1.Text = "";
+            this.quoteText.Location = new System.Drawing.Point(63, 70);
+            this.quoteText.Name = "quoteText";
+            this.quoteText.Size = new System.Drawing.Size(326, 51);
+            this.quoteText.TabIndex = 6;
+            this.quoteText.Text = "";
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(404, 174);
+            this.cancelButton.Location = new System.Drawing.Point(314, 174);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 9;
@@ -117,24 +117,27 @@
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(323, 173);
+            this.okButton.Location = new System.Drawing.Point(233, 174);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 10;
+            this.okButton.Tag = "8";
             this.okButton.Text = "Ok";
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // AddQuote
             // 
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(491, 209);
+            this.ClientSize = new System.Drawing.Size(403, 209);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.quoteText);
+            this.Controls.Add(this.tagsText);
+            this.Controls.Add(this.locText);
+            this.Controls.Add(this.authorText);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -152,10 +155,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.TextBox authorText;
+        private System.Windows.Forms.TextBox locText;
+        private System.Windows.Forms.TextBox tagsText;
+        private System.Windows.Forms.RichTextBox quoteText;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button okButton;
     }

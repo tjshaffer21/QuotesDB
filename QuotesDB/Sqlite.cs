@@ -7,17 +7,18 @@ using System.Data.SQLite;
 
 namespace QuotesDB
 {
-    class Sqlite : DataInterface
+    public class Sqlite : DataInterface
     {
         SQLiteConnection db;
-        public Sqlite() {}
+        public Sqlite() { }
 
         public bool openDatabase(string name)
         {
             string conn = "Data Source=" + name;
-            Console.WriteLine(conn);
+
             db = new SQLiteConnection(conn);
             db.Open();
+
             return true;
         }
 
@@ -27,9 +28,7 @@ namespace QuotesDB
 
             try
             {
-                SQLiteCommand cmds = new SQLiteCommand(db);
-                cmds.CommandText = sql;
-
+                SQLiteCommand cmds = new SQLiteCommand(sql, db);
                 SQLiteDataReader reader = cmds.ExecuteReader();
 
                 table.Load(reader);
@@ -42,30 +41,102 @@ namespace QuotesDB
             return table;
         }
 
+        /// <summary>
+        /// Inserts a row into the table.
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns>The ID of the row; -1 if failure.</returns>
+        public long Insert(string sql)
+        {
+            long id;
+
+            try
+            {
+                SQLiteCommand cmds = new SQLiteCommand(sql, db);
+                cmds.ExecuteNonQuery();
+
+                SQLiteCommand idCmd = new SQLiteCommand(
+                    "SELECT last_insert_rowid();", db);
+                id = (long)idCmd.ExecuteScalar();
+            }
+            catch (SQLiteException ae)
+            {
+                return -1;
+            }
+
+            return id;
+        }
+
+        /// <summary>
+        /// Checks if a row results from the query.
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns>True if row exists, else false</returns>
+        public bool Exists(string sql)
+        {
+            SQLiteCommand cmds = new SQLiteCommand(sql, db);
+            object id = cmds.ExecuteScalar();
+
+            if (id == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if a row exists for the query.
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns>Returns the id if found, -1 if not</returns>
+        public T GetID<T>(string sql)
+        {
+            SQLiteCommand cmds = new SQLiteCommand(sql, db);
+            T id = (T) cmds.ExecuteScalar();
+
+            if (id == null)
+            {
+                return default(T);
+            }
+
+            return id;
+        }
+
+        public bool Update(string sql)
+        {
+            SQLiteCommand cmds = new SQLiteCommand(sql, db);
+            cmds.ExecuteNonQuery();
+
+            return true;
+        }
+
         public bool createDatabase()
         {
-            int num_cmds = 3;
+            int num_cmds = 4;
             string[] sqls = new string[num_cmds];
-            sqls[0] = "CREATE TABLE quotes ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            sqls[0] = "PRAGMA foreign_keys = ON;";
+            sqls[1] = "CREATE TABLE quotes ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
                       "author TEXT NOT NULL DEFAULT ' '," +
                       "quotes TEXT NOT NULL DEFAULT ' '," +
                       "loc TEXT NOT NULL DEFAULT ' ' );";
-            sqls[1] = "CREATE TABLE tags ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            sqls[2] = "CREATE TABLE tags ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
                       "q_id INTEGER NOT NULL REFERENCES quotes(id)," +
                       "tag TEXT NOT NULL DEFAULT ' ');";
-            sqls[2] = "CREATE TABLE tag_list (tag TEXT PRIMARY KEY, " +
-                      "val INTEGER" +
+            sqls[3] = "CREATE TABLE tag_list (tag TEXT PRIMARY KEY, " +
+                      "val INTEGER " +
                       "CONSTRAINT tag REFERENCES tags(tag));";
 
             SQLiteCommand[] cmds = new SQLiteCommand[num_cmds];
-            for(int i = 0; i < num_cmds; i++) {
+            for (int i = 0; i < num_cmds; i++)
+            {
                 try
                 {
-                    cmds[i] = new SQLiteCommand(sqls[i],db);
+                    cmds[i] = new SQLiteCommand(sqls[i], db);
 
                     int updated = cmds[i].ExecuteNonQuery();
                 }
-                catch(SQLiteException ae)
+                catch (SQLiteException ae)
                 {
                     return false;
                 }

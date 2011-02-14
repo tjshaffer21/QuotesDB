@@ -160,6 +160,9 @@
             // 
             // tagList
             // 
+            this.tagList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tagList.FormattingEnabled = true;
             this.tagList.Location = new System.Drawing.Point(0, 28);
             this.tagList.Name = "tagList";
@@ -184,6 +187,9 @@
             // 
             // quotesList
             // 
+            this.quotesList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.quotesList.FormattingEnabled = true;
             this.quotesList.HorizontalScrollbar = true;
             this.quotesList.Location = new System.Drawing.Point(127, 28);

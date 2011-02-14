@@ -11,20 +11,67 @@ namespace QuotesDB
 {
     public partial class EditQuote : Form
     {
-        private string origQuote;
-        private string origAuthor;
-        private string origLoc;
+        private Sqlite db;
+        private bool changed;
+        private bool tChanged;
         private string[] origTags;
+        private long id;
 
-        public EditQuote(string quoteString)
+        public EditQuote(Sqlite db, string quoteString)
         {
             InitializeComponent();
+ 
+            this.db      = db;
+            changed      = false;
+            tChanged     = false;
 
             string[] arg = parseString(quoteString);
+            quoteText.Text    = arg[0].Trim();
+            authorText.Text   = arg[1].Trim();
+            locationText.Text = arg[2].Trim();
 
-            quoteText.Text = arg[0];
-            authorText.Text = arg[1].Trim();
-            locationText.Text = arg[2].Substring(1);
+            string sql = "SELECT id FROM quotes WHERE quotes='" + quoteText.Text + "';";
+            id         = db.GetID<long>(sql);
+
+            string[] tagList = GetTags();
+            origTags         = new string[tagList.Length];
+            for (int i = 0; i < tagList.Length; i++)
+            {
+                origTags[i]   = tagList[i];     // Keep a copy
+
+                if (i + 1 == tagList.Length)
+                {
+                    tagText.Text += tagList[i];
+                }
+                else
+                {
+                    tagText.Text += tagList[i] + ", ";
+                }
+            }
+
+            authorText.TextChanged += new EventHandler(authorText_TextChanged);
+            quoteText.TextChanged += new EventHandler(quoteText_TextChanged);
+            locationText.TextChanged += new EventHandler(locationText_TextChanged);
+            tagText.TextChanged += new EventHandler(tagText_TextChanged);
+        }
+
+        /// <summary>
+        /// Obtains list of tags from database.
+        /// </summary>
+        /// <returns>String array</returns>
+        private string[] GetTags()
+        {
+            string sql     = "SELECT tag FROM tags WHERE q_id=" + id + ";";
+            DataTable tags = db.Get(sql);
+
+            string[] tagList = new string[tags.Rows.Count];
+
+            for (int i = 0; i < tags.Rows.Count; i++)
+            {
+                tagList[i] = tags.Rows[i][0].ToString();
+            }
+
+            return tagList;
         }
 
         /// <summary>
@@ -58,9 +105,71 @@ namespace QuotesDB
             return vals;
         }
 
+        /**********************************************************************
+         *                          Event Handlers                            *
+         *********************************************************************/
         private void cancelButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            string sql = "SELECT tag FROM tags WHERE q_id=" + id + ";";
+            DataTable tbl = db.Get(sql);
+
+            
+            for (int i = 0; i < tbl.Rows.Count; i++)
+            {
+                sql = "UPDATE tag_list SET val=val-1 WHERE tag='" +
+                    tbl.Rows[i][0] + "';";
+                db.Update(sql);
+            }
+
+            sql = "DELETE FROM tags WHERE q_id=" + id + ";";
+            db.Update(sql);
+
+            sql = "DELETE FROM quotes WHERE id=" + id + ";";
+            db.Update(sql);
+
+            this.Close();
+        }
+
+        private void okButton_Click(object sender, EventArgs e)
+        {
+            if (changed)
+            {
+                db.Update("UPDATE quotes SET author='" + authorText.Text +
+                    "', quotes='" + quoteText.Text + "', loc='" +
+                    locationText.Text + "' WHERE id=" + id + ";");
+            }
+
+            if (tChanged)
+            {
+                Console.WriteLine("Tag change not implemented. " + tChanged);
+            }
+
+            this.Close();
+        }
+        
+        private void authorText_TextChanged(object sender, EventArgs e)
+        {
+            changed = true;
+        }
+
+        private void locationText_TextChanged(object sender, EventArgs e)
+        {  
+ 	        changed = true;
+        }
+
+        private void quoteText_TextChanged(object sender, EventArgs e)
+        {   
+ 	        changed = true;
+        }
+
+        private void tagText_TextChanged(object sender, EventArgs e)
+        {
+            tChanged = true;
         }
     }
 }

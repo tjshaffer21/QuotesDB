@@ -31,7 +31,7 @@ namespace QuotesDB
         private void connect()
         {
             bool exists = false;
-            string str = "C:\\Users\\Thomas\\Desktop\\quotes2.db";
+            string str = "C:\\Users\\Thomas\\Desktop\\test.db";      // CHANGE
 
             if (File.Exists(str))
             {
@@ -112,6 +112,15 @@ namespace QuotesDB
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private void RefreshQuotes()
+        {   // Rewrite to refresh properly.
+            tagList.Items.Clear();
+            populate_tagList();
+        }
+
         /**********************************************************************
          *                             Event Handlers                         *
          *********************************************************************/
@@ -137,20 +146,27 @@ namespace QuotesDB
 
         private void quotesList_DoubleClicked(object sender, EventArgs e)
         {
-            string quoteString = quotesList.SelectedItem.ToString();
+            object quote = quotesList.SelectedItem;
+            if (quote != null)
+            {
+                new EditQuote(db, quote.ToString()).ShowDialog();
+            }
+
+            this.RefreshQuotes();
+        }
+
+        private void addQuoteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form aq = new AddQuote(db);
+            aq.ShowDialog(this);
+
+            this.RefreshQuotes();
             
-            Form eq = new EditQuote(quoteString);
-            eq.Show();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new About().Show();
-        }
-
-        private void addQuoteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AddQuote().Show();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

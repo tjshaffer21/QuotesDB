@@ -58,16 +58,11 @@ namespace QuotesDB
             tagList.Items.Add("All");
             tagList.SetSelected(0, true);
 
-            long count = 0;
             foreach (DataRow r in population.Rows)
             {
                 string str = r[0] + " (" + r[1] + ")";
                 tagList.Items.Add(str);
-
-                count += (long)r[1];
             }
-
-            numQuotesStatus.Text = count.ToString() + " quotes";
         }
 
         /// <summary>
@@ -76,7 +71,7 @@ namespace QuotesDB
         private void populate_quotesList(string tag)
         {
             DataTable population = db.createQuotesTable();
-
+            
             if (tag.CompareTo("All") == 0)
             {
                 population = db.Get("SELECT * FROM quotes");
@@ -86,7 +81,7 @@ namespace QuotesDB
                 DataTable ids = db.Get("SELECT q_id FROM tags WHERE tag=\"" + 
                     tag + "\"");
 
-                for(int i = 0; i < ids.Rows.Count; i++) {
+                 for(int i = 0; i < ids.Rows.Count; i++) {
                     DataTable q = db.Get("SELECT * FROM quotes WHERE id=" + 
                         ids.Rows[i][0]);
                     
@@ -96,20 +91,25 @@ namespace QuotesDB
             }
 
             quotesList.Items.Clear();
-            foreach (DataRow r in population.Rows)
+            
+            for(int i = 0; i < population.Rows.Count; i++)
             {
                 string str;
 
-                if (r[3].Equals(""))
+                if (population.Rows[i][3].Equals(""))
                 {
-                    str = r[2] + " ~ " + r[1] + " " + r[3];
+                    str = population.Rows[i][2] + " ~ " + population.Rows[i][1]
+                        + " " + population.Rows[i][3];
                 } else
                 {
-                    str = r[2] + " ~ " + r[1] + ", " + r[3];
+                    str = population.Rows[i][2] + " ~ " + population.Rows[i][1] 
+                        + ", " + population.Rows[i][3];
                 }
 
                 quotesList.Items.Add(str);
             }
+
+            numQuotesStatus.Text = "";
         }
 
         /// <summary>

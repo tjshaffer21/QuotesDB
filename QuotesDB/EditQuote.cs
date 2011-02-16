@@ -11,11 +11,11 @@ namespace QuotesDB
 {
     public partial class EditQuote : Form
     {
-        private Sqlite db;
-        private bool changed;
-        private bool tChanged;
+        private Sqlite   db;
+        private bool     changed;
+        private bool     tChanged;
         private string[] origTags;
-        private long id;
+        private long     id;
 
         public EditQuote(Sqlite db, string quoteString)
         {
@@ -25,7 +25,7 @@ namespace QuotesDB
             changed      = false;
             tChanged     = false;
 
-            string[] arg = parseString(quoteString);
+            string[] arg      = parseString(quoteString);
             quoteText.Text    = arg[0].Trim();
             authorText.Text   = arg[1].Trim();
             locationText.Text = arg[2].Trim();
@@ -49,10 +49,14 @@ namespace QuotesDB
                 }
             }
 
-            authorText.TextChanged += new EventHandler(authorText_TextChanged);
-            quoteText.TextChanged += new EventHandler(quoteText_TextChanged);
-            locationText.TextChanged += new EventHandler(locationText_TextChanged);
-            tagText.TextChanged += new EventHandler(tagText_TextChanged);
+            authorText.TextChanged += 
+                new EventHandler(authorText_TextChanged);
+            quoteText.TextChanged += 
+                new EventHandler(quoteText_TextChanged);
+            locationText.TextChanged += 
+                new EventHandler(locationText_TextChanged);
+            tagText.TextChanged += 
+                new EventHandler(tagText_TextChanged);
         }
 
         /// <summary>
@@ -126,11 +130,8 @@ namespace QuotesDB
                 db.Update(sql);
             }
 
-            sql = "DELETE FROM tags WHERE q_id=" + id + ";";
-            db.Update(sql);
-
-            sql = "DELETE FROM quotes WHERE id=" + id + ";";
-            db.Update(sql);
+            db.Delete("tags", "q_id=" + id);
+            db.Delete("quotes", "id=" + id);
 
             this.Close();
         }
@@ -139,19 +140,91 @@ namespace QuotesDB
         {
             if (changed)
             {
-                db.Update("UPDATE quotes SET author='" + authorText.Text +
+                string author = authorText.Text.Trim();
+
+                if (author.Equals(""))
+                {
+                    author = "Unknown";
+                }
+
+                db.Update("UPDATE quotes SET author='" + author +
                     "', quotes='" + quoteText.Text + "', loc='" +
                     locationText.Text + "' WHERE id=" + id + ";");
             }
 
             if (tChanged)
             {
-                Console.WriteLine("Tag change not implemented. " + tChanged);
+                char[] delimiter = { ',' };
+                string[] tags = tagText.Text.Split(delimiter);
+
+                string[] deleted = SearchTags(origTags, tags);
+                string[] added = SearchTags(tags, origTags);
+
+                for (int i = 0; i < deleted.Length; i++)
+                {
+                    string sql = "UPDATE tag_list SET val=val-1 WHERE tag='"
+                        + deleted[i] + "';";
+                    db.Update(sql);
+
+                    db.Delete("tags", "tag='" + deleted[i] + "'");
+                }
+
+                for (int i = 0; i < added.Length; i++)
+                {
+                    string sql = "INSERT INTO tags (q_id, tag) VALUES ( " + id + ", '"
+                        + added[i] + "');";
+
+                    db.Insert<long>(sql);
+                    
+                    sql = "SELECT tag FROM tag_list WHERE tag='" + added[i] + "';";
+
+                    if (db.Exists(sql))
+                    {
+                        sql = "UPDATE tag_list SET val=val+1 WHERE tag='" + added[i] + "';";
+                        db.Update(sql);
+                    }
+                    else
+                    {
+                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + added[i] + "', 1);";
+                        db.Insert<long>(sql);
+                    }
+                }
             }
 
             this.Close();
         }
-        
+
+        /// <summary>
+        /// Searches two list of tags and returns the union.
+        /// </summary>
+        /// <param name="searchingTags">The array used for search criteria</param>
+        /// <param name="searchTags">The array to search through.</param>
+        /// <returns>An array of the union.</returns>
+        private string[] SearchTags(string[] searchingTags, string[] searchTags)
+        {
+            bool found;
+            List<string> tags = new List<string>();
+
+            for (int i = 0; i < searchingTags.Length; i++)
+            {
+                found = false;
+                for (int j = 0; j < searchTags.Length; j++)
+                {
+                    if (searchTags[j].Trim().Equals(searchingTags[i].Trim()))
+                    {
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    tags.Add(searchingTags[i]);
+                }
+            }
+
+            return tags.ToArray<string>();
+        }
+
         private void authorText_TextChanged(object sender, EventArgs e)
         {
             changed = true;

@@ -46,9 +46,9 @@ namespace QuotesDB
         /// </summary>
         /// <param name="sql"></param>
         /// <returns>The ID of the row; -1 if failure.</returns>
-        public long Insert(string sql)
+        public T Insert<T>(string sql)
         {
-            long id;
+            T id;
 
             try
             {
@@ -57,14 +57,32 @@ namespace QuotesDB
 
                 SQLiteCommand idCmd = new SQLiteCommand(
                     "SELECT last_insert_rowid();", db);
-                id = (long)idCmd.ExecuteScalar();
+                id = (T)idCmd.ExecuteScalar();
             }
-            catch (SQLiteException ae)
+            catch(SQLiteException ae)
             {
-                return -1;
+                Console.WriteLine(ae.Message.ToString());
+                return default(T);
             }
 
             return id;
+        }
+
+        public bool Update(string sql)
+        {
+            SQLiteCommand cmds = new SQLiteCommand(sql, db);
+            cmds.ExecuteNonQuery();
+
+            return true;
+        }
+
+        public bool Delete(string tbl, string criteria)
+        {
+            string sql = "DELETE FROM " + tbl + " WHERE " + criteria + ";";
+            SQLiteCommand cmd = new SQLiteCommand(sql, db);
+            cmd.ExecuteNonQuery();
+
+            return true;
         }
 
         /// <summary>
@@ -103,14 +121,6 @@ namespace QuotesDB
             return id;
         }
 
-        public bool Update(string sql)
-        {
-            SQLiteCommand cmds = new SQLiteCommand(sql, db);
-            cmds.ExecuteNonQuery();
-
-            return true;
-        }
-
         public bool createDatabase()
         {
             int num_cmds = 4;
@@ -124,8 +134,7 @@ namespace QuotesDB
                       "q_id INTEGER NOT NULL REFERENCES quotes(id)," +
                       "tag TEXT NOT NULL DEFAULT ' ');";
             sqls[3] = "CREATE TABLE tag_list (tag TEXT PRIMARY KEY, " +
-                      "val INTEGER " +
-                      "CONSTRAINT tag REFERENCES tags(tag));";
+                      "val INTEGER);";
 
             SQLiteCommand[] cmds = new SQLiteCommand[num_cmds];
             for (int i = 0; i < num_cmds; i++)
@@ -133,10 +142,9 @@ namespace QuotesDB
                 try
                 {
                     cmds[i] = new SQLiteCommand(sqls[i], db);
-
-                    int updated = cmds[i].ExecuteNonQuery();
+                    cmds[i].ExecuteNonQuery();
                 }
-                catch (SQLiteException ae)
+                catch
                 {
                     return false;
                 }

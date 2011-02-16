@@ -29,41 +29,42 @@ namespace QuotesDB
             char[] delimiter = { ',' };
 
             string author = authorText.Text.Trim();
-            string loc = locText.Text.Trim();
-            string quote = quoteText.Text.Trim();
+            string loc    = locText.Text.Trim();
+            string quote  = quoteText.Text.Trim();
             string[] tags = tagsText.Text.Split(delimiter);
 
-            if (quote.Trim().Length > 0)
+            if (quote.Length > 0)
             {
-                if (author.Trim().Length == 0)
+                if (author.Length == 0)
                 {
                     author = "Unknown";
                 }
 
                 string sql = "INSERT INTO quotes (author, quotes, loc) VALUES ('" +
                              author + "', '" + quote + "', '" + loc + "');";
-                long id = db.Insert(sql);
+                long id = db.Insert<long>(sql);
 
                 for (int i = 0; i < tags.Length; i++)
                 {
-                    sql = "SELECT id FROM tags WHERE tag='" + tags[i] + "';";
+                    string tag = tags[i].Trim();
+                    sql = "SELECT id FROM tags WHERE tag='" + tag + "';";
                     db.Exists(sql);
 
                     sql = "INSERT INTO tags (q_id, tag) VALUES (" + id + ", '" +
-                        tags[i] + "');";
-                    db.Insert(sql);
+                        tag + "');";
+                    db.Insert<long>(sql);
 
-                    sql = "SELECT tag FROM tag_list WHERE tag='" + tags[i] + "';";
+                    sql = "SELECT tag FROM tag_list WHERE tag='" + tag + "';";
 
                     if (db.Exists(sql))
                     {
-                        sql = "UPDATE tag_list SET val=val+1 WHERE tag='" + tags[i] + "';";
+                        sql = "UPDATE tag_list SET val=val+1 WHERE tag='" + tag + "';";
                         db.Update(sql);
                     }
                     else
                     {
-                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + tags[i] + "', 1);";
-                        db.Insert(sql);
+                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + tag + "', 1);";
+                        db.Insert<long>(sql);
                     }
                 }
             }

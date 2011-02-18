@@ -173,5 +173,53 @@ namespace QuotesDB
         { 
             this.Close();
         }
+
+        private void tagsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ManageTags(db).ShowDialog(this);
+            this.RefreshQuotes();
+        }
+
+        private void textCommaDelimitedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog expTxt = new SaveFileDialog();
+            expTxt.InitialDirectory = Environment.GetFolderPath(
+                Environment.SpecialFolder.MyDocuments);
+            expTxt.Filter      = "All (*.*)|*.*|Text (*.txt)|*.txt";
+            expTxt.FilterIndex = 1;
+
+            if (expTxt.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
+                expTxt.FileName.Length > 0)
+            {
+                string filename = expTxt.FileName;
+                WriteToFile(filename);
+            }
+        }
+
+        private void WriteToFile(string filename)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (StreamWriter sr = new StreamWriter(filename))
+            {
+                string sql = "SELECT * FROM quotes;";
+                DataTable tbl = db.Get(sql);
+
+                for (int i = 0; i < tbl.Rows.Count; i++)
+                {
+                    sb.Append(tbl.Rows[i][1] + "|" + tbl.Rows[i][2]);
+                    sql = "SELECT tag FROM tags WHERE q_id=" + tbl.Rows[i][0]
+                        + ";";
+                    DataTable tagtbl = db.Get(sql);
+
+                    for (int j = 0; j < tagtbl.Rows.Count; j++)
+                    {
+                        sb.Append("|" + tagtbl.Rows[j][0]);
+                    }
+                    sb.AppendLine();
+                }
+
+                sr.Write(sb.ToString());
+            }
+        }
     }
 }

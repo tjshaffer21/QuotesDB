@@ -33,12 +33,12 @@
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textCommaDelimitedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textCommaDelimitedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addQuoteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageTagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.quotesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.authorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,7 +77,7 @@
             this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textCommaDelimitedToolStripMenuItem});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.importToolStripMenuItem.Text = "&Import";
             // 
             // textCommaDelimitedToolStripMenuItem
@@ -88,14 +88,23 @@
             // 
             // exportToolStripMenuItem
             // 
+            this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.textCommaDelimitedToolStripMenuItem1});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToolStripMenuItem.Text = "&Export";
+            // 
+            // textCommaDelimitedToolStripMenuItem1
+            // 
+            this.textCommaDelimitedToolStripMenuItem1.Name = "textCommaDelimitedToolStripMenuItem1";
+            this.textCommaDelimitedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.textCommaDelimitedToolStripMenuItem1.Text = "Text";
+            this.textCommaDelimitedToolStripMenuItem1.Click += new System.EventHandler(this.textCommaDelimitedToolStripMenuItem1_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -119,7 +128,6 @@
             // 
             this.manageTagsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tagsToolStripMenuItem,
-            this.quotesToolStripMenuItem,
             this.authorsToolStripMenuItem});
             this.manageTagsToolStripMenuItem.Name = "manageTagsToolStripMenuItem";
             this.manageTagsToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
@@ -130,12 +138,7 @@
             this.tagsToolStripMenuItem.Name = "tagsToolStripMenuItem";
             this.tagsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.tagsToolStripMenuItem.Text = "Tags";
-            // 
-            // quotesToolStripMenuItem
-            // 
-            this.quotesToolStripMenuItem.Name = "quotesToolStripMenuItem";
-            this.quotesToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.quotesToolStripMenuItem.Text = "Quotes";
+            this.tagsToolStripMenuItem.Click += new System.EventHandler(this.tagsToolStripMenuItem_Click);
             // 
             // authorsToolStripMenuItem
             // 
@@ -231,13 +234,13 @@
         private System.Windows.Forms.ToolStripMenuItem addQuoteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manageTagsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tagsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem quotesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem authorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textCommaDelimitedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel numQuotesStatus;
+        private System.Windows.Forms.ToolStripMenuItem textCommaDelimitedToolStripMenuItem1;
     }
 }
 

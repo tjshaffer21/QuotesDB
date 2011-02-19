@@ -25,14 +25,15 @@ namespace QuotesDB
                 new EventHandler(quotesList_DoubleClicked);
             
             connect();
-            populate_tagList();     // Automatically calls populate_quotesList();
+            FillTagList();     // Automatically calls FillQuotesList();
         }
 
         private void connect()
         {
             bool exists = false;
-            string str = "C:\\Users\\Thomas\\Desktop\\test.db";      // CHANGE
-
+            string str = Environment.GetFolderPath(
+                Environment.SpecialFolder.MyDocuments) + "\\quotes.db";
+            
             if (File.Exists(str))
             {
                 exists = true;
@@ -50,7 +51,7 @@ namespace QuotesDB
         /// <summary>
         /// Populates tagList with all available tags.
         /// </summary>
-        private void populate_tagList()
+        private void FillTagList()
         {
             DataTable population = db.Get(
                 "SELECT * FROM tag_list ORDER BY tag ASC;");
@@ -68,7 +69,7 @@ namespace QuotesDB
         /// <summary>
         /// Populates quotesList with all available quotes.
         /// </summary>
-        private void populate_quotesList(string tag)
+        private void FillQuotesList(string tag)
         {
             DataTable population = db.createQuotesTable();
             
@@ -112,13 +113,10 @@ namespace QuotesDB
             numQuotesStatus.Text = "";
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         private void RefreshQuotes()
-        {   // Rewrite to refresh properly.
+        {
             tagList.Items.Clear();
-            populate_tagList();
+            FillTagList();
         }
 
         /**********************************************************************
@@ -141,7 +139,7 @@ namespace QuotesDB
                 tag = split[0];
             }
 
-            populate_quotesList(tag);
+            FillQuotesList(tag);
         }
 
         private void quotesList_DoubleClicked(object sender, EventArgs e)
@@ -157,11 +155,8 @@ namespace QuotesDB
 
         private void addQuoteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form aq = new AddQuote(db);
-            aq.ShowDialog(this);
-
+            new AddQuote(db).ShowDialog(this);
             this.RefreshQuotes();
-            
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -182,20 +177,23 @@ namespace QuotesDB
 
         private void textCommaDelimitedToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog expTxt = new SaveFileDialog();
+            SaveFileDialog expTxt   = new SaveFileDialog();
             expTxt.InitialDirectory = Environment.GetFolderPath(
                 Environment.SpecialFolder.MyDocuments);
-            expTxt.Filter      = "All (*.*)|*.*|Text (*.txt)|*.txt";
-            expTxt.FilterIndex = 1;
+            expTxt.Filter           = "All (*.*)|*.*|Text (*.txt)|*.txt";
+            expTxt.FilterIndex      = 1;
 
             if (expTxt.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
                 expTxt.FileName.Length > 0)
             {
-                string filename = expTxt.FileName;
-                WriteToFile(filename);
+                WriteToFile(expTxt.FileName);
             }
         }
 
+        /// <summary>
+        /// Write database to a file.
+        /// </summary>
+        /// <param name="filename">Name of the file</param>
         private void WriteToFile(string filename)
         {
             StringBuilder sb = new StringBuilder();
@@ -206,7 +204,8 @@ namespace QuotesDB
 
                 for (int i = 0; i < tbl.Rows.Count; i++)
                 {
-                    sb.Append(tbl.Rows[i][1] + "|" + tbl.Rows[i][2]);
+                    sb.Append(tbl.Rows[i][1] + "|" + tbl.Rows[i][2] + 
+                        "|" + tbl.Rows[i][3]);
                     sql = "SELECT tag FROM tags WHERE q_id=" + tbl.Rows[i][0]
                         + ";";
                     DataTable tagtbl = db.Get(sql);
@@ -220,6 +219,63 @@ namespace QuotesDB
 
                 sr.Write(sb.ToString());
             }
+        }
+
+        private void textCommaDelimitedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog impTxt   = new OpenFileDialog();
+            impTxt.InitialDirectory = Environment.GetFolderPath(
+                Environment.SpecialFolder.MyDocuments);
+            impTxt.Filter           = "All (*.*)|*.*|Text (*.txt)|*.txt";
+            impTxt.FilterIndex      = 1;
+
+            if (impTxt.ShowDialog() == System.Windows.Forms.DialogResult.OK &&
+                impTxt.FileName.Length > 0)
+            {
+                ReadFromFile(impTxt.FileName);
+                RefreshQuotes();
+            }
+        }
+
+        private void ReadFromFile(string filename)
+        {
+            char[] delimiter = { '|' };
+            StreamReader sr = File.OpenText(filename);
+            string s = sr.ReadLine();
+
+            while (s != null)
+            {
+                string[] data = s.Split(delimiter);
+                string sql    = "INSERT INTO quotes (author, quotes, loc) " +
+                    "VALUES ('" + data[0] + "', '" + data[1] + "', '" +
+                    data[2] + "');";
+                long id       = db.Insert<long>(sql);
+
+                for (int i = 3; i < data.Length; i++)
+                {
+                    sql = "INSERT INTO tags (q_id, tag) VALUES (" + id + ", '"
+                        + data[i] + "');";
+                    db.Insert<long>(sql);
+
+                    sql = "SELECT tag FROM tag_list WHERE tag='" + data[i] + "';";
+
+                    if (db.Exists(sql))
+                    {
+                        sql = "UPDATE tag_list SET val=val+1 WHERE tag='" +
+                            data[i] + "';";
+                        db.Update(sql);
+                    }
+                    else
+                    {
+                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" +
+                            data[i] + "', 1);";
+                        db.Insert<long>(sql);
+                    }
+                }
+
+                s = sr.ReadLine();
+            }
+
         }
     }
 }

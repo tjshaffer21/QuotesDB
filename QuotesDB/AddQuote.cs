@@ -40,30 +40,30 @@ namespace QuotesDB
                     author = "Unknown";
                 }
 
-                string sql = "INSERT INTO quotes (author, quotes, loc) VALUES ('" +
-                             author + "', '" + quote + "', '" + loc + "');";
+                string sql = "INSERT INTO quotes (author, quotes, loc) VALUES " +
+                    "('" + author + "', '" + quote + "', '" + loc + "');";
                 long id = db.Insert<long>(sql);
 
                 for (int i = 0; i < tags.Length; i++)
                 {
                     string tag = tags[i].Trim();
-                    sql = "SELECT id FROM tags WHERE tag='" + tag + "';";
-                    db.Exists(sql);
 
-                    sql = "INSERT INTO tags (q_id, tag) VALUES (" + id + ", '" +
-                        tag + "');";
+                    sql = "INSERT INTO tags (q_id, tag) VALUES (" + id + ", '" 
+                        + tag + "');";
                     db.Insert<long>(sql);
 
                     sql = "SELECT tag FROM tag_list WHERE tag='" + tag + "';";
 
                     if (db.Exists(sql))
                     {
-                        sql = "UPDATE tag_list SET val=val+1 WHERE tag='" + tag + "';";
+                        sql = "UPDATE tag_list SET val=val+1 WHERE tag='" + 
+                            tag + "';";
                         db.Update(sql);
                     }
                     else
                     {
-                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + tag + "', 1);";
+                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + 
+                            tag + "', 1);";
                         db.Insert<long>(sql);
                     }
                 }

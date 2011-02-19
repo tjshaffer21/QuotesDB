@@ -33,6 +33,7 @@ namespace QuotesDB
             string sql = "SELECT id FROM quotes WHERE quotes='" + quoteText.Text + "';";
             id         = db.GetID<long>(sql);
 
+            // Get tags from database and update tag textbox.
             string[] tagList = GetTags();
             origTags         = new string[tagList.Length];
             for (int i = 0; i < tagList.Length; i++)

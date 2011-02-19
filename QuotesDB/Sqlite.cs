@@ -22,6 +22,11 @@ namespace QuotesDB
             return true;
         }
 
+        /// <summary>
+        /// Gets data from the table.
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         public DataTable Get(string sql)
         {
             DataTable table = new DataTable();
@@ -121,6 +126,10 @@ namespace QuotesDB
             return id;
         }
 
+        /// <summary>
+        /// Creates the layout of the sqlite database.
+        /// </summary>
+        /// <returns></returns>
         public bool createDatabase()
         {
             int num_cmds = 4;
@@ -153,7 +162,8 @@ namespace QuotesDB
         }
 
         /// <summary>
-        /// Creates a table that contains the columns and types matching the quotes table in the database
+        /// Creates a table that contains the columns and types matching the 
+        /// quotes table in the database
         /// </summary>
         /// <returns>DataBase with the quotes table layout.</returns>
         /// <remarks>Necessary to have layout when viewing with tags.</remarks>

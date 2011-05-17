@@ -59,9 +59,8 @@ namespace QuotesDB
 
             for (int i = 0; i < tags.Length; i++)
             {
-                string sql = "INSERT INTO tag_list (tag, val) VALUES " +
-                    "('" + tags[i] + "', 0 )";
-                db.Insert<long>(sql);
+                db.Insert<long>("tag_list", "tag, val", "'" + tags[i] +
+                    "', 0"); ;
             }
 
             tagList.Items.Clear();

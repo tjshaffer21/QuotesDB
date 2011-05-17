@@ -30,7 +30,7 @@ namespace QuotesDB
             authorText.Text   = arg[1].Trim();
             locationText.Text = arg[2].Trim();
 
-            string sql = "SELECT id FROM quotes WHERE quotes='" + quoteText.Text + "';";
+            string sql = "SELECT id FROM quotes WHERE quotes='" + ReplaceQuoteChar(quoteText.Text) + "';";
             id         = db.GetID<long>(sql);
 
             // Get tags from database and update tag textbox.
@@ -110,6 +110,23 @@ namespace QuotesDB
             return vals;
         }
 
+        /// <summary>
+        /// Sanitize data by converting single quote into two single quotes.
+        /// </summary>
+        /// <param name="s">String to manipulate</param>
+        /// <returns>Sanitized string</returns>
+        private string ReplaceQuoteChar(string s)
+        {
+            int pos = s.IndexOf('\'');
+            while (pos >= 0)
+            {
+                s = s.Insert(pos, "'");
+                pos = s.IndexOf('\'', pos + 2);
+            }
+
+            return s;
+        }
+
         /**********************************************************************
          *                          Event Handlers                            *
          *********************************************************************/
@@ -148,9 +165,10 @@ namespace QuotesDB
                     author = "Unknown";
                 }
 
-                db.Update("UPDATE quotes SET author='" + author +
-                    "', quotes='" + quoteText.Text + "', loc='" +
-                    locationText.Text + "' WHERE id=" + id + ";");
+                db.Update("UPDATE quotes SET author='" + ReplaceQuoteChar(author) +
+                    "', quotes='" + ReplaceQuoteChar(quoteText.Text) + 
+                    "', loc='" + ReplaceQuoteChar(locationText.Text) + 
+                    "' WHERE id=" + id + ";");
             }
 
             if (tChanged)
@@ -167,17 +185,14 @@ namespace QuotesDB
                         + deleted[i] + "';";
                     db.Update(sql);
 
-                    db.Delete("tags", "tag='" + deleted[i] + "'");
+                    db.Delete("tags", "tag='" + deleted[i] + "' AND id=" + id);
                 }
 
                 for (int i = 0; i < added.Length; i++)
                 {
-                    string sql = "INSERT INTO tags (q_id, tag) VALUES ( " + id + ", '"
-                        + added[i] + "');";
-
-                    db.Insert<long>(sql);
+                    db.Insert<long>("tags", "q_id, tag", id + ", '" + added[i] + "'");
                     
-                    sql = "SELECT tag FROM tag_list WHERE tag='" + added[i] + "';";
+                    string sql = "SELECT tag FROM tag_list WHERE tag='" + added[i] + "';";
 
                     if (db.Exists(sql))
                     {
@@ -186,8 +201,8 @@ namespace QuotesDB
                     }
                     else
                     {
-                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + added[i] + "', 1);";
-                        db.Insert<long>(sql);
+                        db.Insert<long>("tag_list", "tag, val", "'" + added[i] +
+                            "', 1");
                     }
                 }
             }

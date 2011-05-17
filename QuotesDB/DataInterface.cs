@@ -11,7 +11,7 @@ namespace QuotesDB
         bool openDatabase(string dbName);
         bool createDatabase();
         bool closeDatabase();
-        T Insert<T>(string sql);
+        T Insert<T>(string tbl, string fields, string values);
         DataTable Get(string sql);
         bool Exists(string sql);
         bool Update(string sql);

@@ -245,19 +245,17 @@ namespace QuotesDB
 
             while (s != null)
             {
+                s = ReplaceQuoteChar(s);
                 string[] data = s.Split(delimiter);
-                string sql    = "INSERT INTO quotes (author, quotes, loc) " +
-                    "VALUES ('" + data[0] + "', '" + data[1] + "', '" +
-                    data[2] + "');";
-                long id       = db.Insert<long>(sql);
+
+                long id       = db.Insert<long>("quotes", "author, quotes, loc",
+                    "'" + data[0] + "','" + data[1] + "','" + data[2] + "'");
 
                 for (int i = 3; i < data.Length; i++)
                 {
-                    sql = "INSERT INTO tags (q_id, tag) VALUES (" + id + ", '"
-                        + data[i] + "');";
-                    db.Insert<long>(sql);
+                    db.Insert<long>("tags", "q_id, tag", id + ", '" + data[i] + "'");
 
-                    sql = "SELECT tag FROM tag_list WHERE tag='" + data[i] + "';";
+                    string sql = "SELECT tag FROM tag_list WHERE tag='" + data[i] + "';";
 
                     if (db.Exists(sql))
                     {
@@ -267,15 +265,30 @@ namespace QuotesDB
                     }
                     else
                     {
-                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" +
-                            data[i] + "', 1);";
-                        db.Insert<long>(sql);
+                        db.Insert<long>("tag_list", "tag, val", "'" + data[i] +
+                            "', 1");
                     }
                 }
 
                 s = sr.ReadLine();
             }
+        }
 
+        /// <summary>
+        /// Sanitize data by converting single quote into two single quotes.
+        /// </summary>
+        /// <param name="s">String to manipulate</param>
+        /// <returns>Sanitized string</returns>
+        private string ReplaceQuoteChar(string s)
+        {
+            int pos = s.IndexOf('\'');
+            while (pos >= 0)
+            {
+                s   = s.Insert(pos, "'");
+                pos = s.IndexOf('\'', pos + 2);
+            }
+
+            return s;
         }
     }
 }

@@ -12,6 +12,10 @@ Import/Export:
 --------------
 Text files for quotes uses the format of `author|quote|location|tag1|tag2`.
 
+Known Bugs:
+------------
+
+
 License:
 --------
 The software is under the MIT License. You can read the LICENSE file for the details.

@@ -51,10 +51,12 @@ namespace QuotesDB
         /// </summary>
         /// <param name="sql"></param>
         /// <returns>The ID of the row; -1 if failure.</returns>
-        public T Insert<T>(string sql)
+        public T Insert<T>(string tbl, string fields, string values)
         {
             T id;
 
+            string sql = "INSERT INTO " + tbl + "(" + fields + ") VALUES (" +
+                values + ");";
             try
             {
                 SQLiteCommand cmds = new SQLiteCommand(sql, db);
@@ -64,9 +66,8 @@ namespace QuotesDB
                     "SELECT last_insert_rowid();", db);
                 id = (T)idCmd.ExecuteScalar();
             }
-            catch(SQLiteException ae)
+            catch
             {
-                Console.WriteLine(ae.Message.ToString());
                 return default(T);
             }
 

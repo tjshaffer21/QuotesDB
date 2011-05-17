@@ -18,6 +18,23 @@ namespace QuotesDB
             this.db = db;
             InitializeComponent();
         }
+        
+        /// <summary>
+        /// Sanitize data by converting single quote into two single quotes.
+        /// </summary>
+        /// <param name="s">String to manipulate</param>
+        /// <returns>Sanitized string</returns>
+        private string ReplaceQuoteChar(string s)
+        {
+            int pos = s.IndexOf('\'');
+            while (pos >= 0)
+            {
+                s = s.Insert(pos, "'");
+                pos = s.IndexOf('\'', pos + 2);
+            }
+
+            return s;
+        }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
@@ -40,19 +57,27 @@ namespace QuotesDB
                     author = "Unknown";
                 }
 
-                string sql = "INSERT INTO quotes (author, quotes, loc) VALUES " +
-                    "('" + author + "', '" + quote + "', '" + loc + "');";
-                long id = db.Insert<long>(sql);
+                if (tags.Length == 1 && tags[0].Equals(""))
+                {
+                    tags[0] = "Unknown";
+                }
 
+                Console.WriteLine(tags[0]);
+                author = ReplaceQuoteChar(author);
+                loc    = ReplaceQuoteChar(loc);
+                quote  = ReplaceQuoteChar(quote);
+                
+                long id = db.Insert<long>("quotes", "author, quotes, loc",
+                    "'" + author + "','" + quote + "','" + loc + "'");
+
+                Console.WriteLine(tags.Length);
                 for (int i = 0; i < tags.Length; i++)
                 {
                     string tag = tags[i].Trim();
+                    Console.WriteLine(tag);
+                    db.Insert<long>("tags", "q_id, tag", id + ", '" + tag + "'");
 
-                    sql = "INSERT INTO tags (q_id, tag) VALUES (" + id + ", '" 
-                        + tag + "');";
-                    db.Insert<long>(sql);
-
-                    sql = "SELECT tag FROM tag_list WHERE tag='" + tag + "';";
+                    string sql = "SELECT tag FROM tag_list WHERE tag='" + tag + "';";
 
                     if (db.Exists(sql))
                     {
@@ -62,9 +87,8 @@ namespace QuotesDB
                     }
                     else
                     {
-                        sql = "INSERT INTO tag_list (tag, val) VALUES ('" + 
-                            tag + "', 1);";
-                        db.Insert<long>(sql);
+                        db.Insert<long>("tag_list", "tag, val", "'" + tag + 
+                            "', 1");
                     }
                 }
             }

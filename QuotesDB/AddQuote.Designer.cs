@@ -55,7 +55,7 @@
             this.label2.Location = new System.Drawing.Point(5, 47);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(51, 13);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Location:";
             // 
             // label3
@@ -64,7 +64,7 @@
             this.label3.Location = new System.Drawing.Point(13, 108);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(39, 13);
-            this.label3.TabIndex = 2;
+            this.label3.TabIndex = 0;
             this.label3.Text = "Quote:";
             // 
             // label4
@@ -73,7 +73,7 @@
             this.label4.Location = new System.Drawing.Point(22, 134);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 13);
-            this.label4.TabIndex = 3;
+            this.label4.TabIndex = 0;
             this.label4.Text = "Tags:";
             // 
             // authorText
@@ -81,28 +81,28 @@
             this.authorText.Location = new System.Drawing.Point(63, 13);
             this.authorText.Name = "authorText";
             this.authorText.Size = new System.Drawing.Size(326, 20);
-            this.authorText.TabIndex = 4;
+            this.authorText.TabIndex = 1;
             // 
             // locText
             // 
             this.locText.Location = new System.Drawing.Point(63, 40);
             this.locText.Name = "locText";
             this.locText.Size = new System.Drawing.Size(326, 20);
-            this.locText.TabIndex = 5;
+            this.locText.TabIndex = 2;
             // 
             // tagsText
             // 
             this.tagsText.Location = new System.Drawing.Point(63, 127);
             this.tagsText.Name = "tagsText";
             this.tagsText.Size = new System.Drawing.Size(326, 20);
-            this.tagsText.TabIndex = 7;
+            this.tagsText.TabIndex = 4;
             // 
             // quoteText
             // 
             this.quoteText.Location = new System.Drawing.Point(63, 70);
             this.quoteText.Name = "quoteText";
             this.quoteText.Size = new System.Drawing.Size(326, 51);
-            this.quoteText.TabIndex = 6;
+            this.quoteText.TabIndex = 3;
             this.quoteText.Text = "";
             // 
             // cancelButton
@@ -110,7 +110,7 @@
             this.cancelButton.Location = new System.Drawing.Point(314, 174);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 9;
+            this.cancelButton.TabIndex = 6;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -120,7 +120,7 @@
             this.okButton.Location = new System.Drawing.Point(233, 174);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 10;
+            this.okButton.TabIndex = 5;
             this.okButton.Tag = "8";
             this.okButton.Text = "Ok";
             this.okButton.UseVisualStyleBackColor = true;
@@ -131,6 +131,7 @@
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(403, 209);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);

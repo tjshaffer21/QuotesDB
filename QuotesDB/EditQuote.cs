@@ -185,7 +185,7 @@ namespace QuotesDB
                         + deleted[i] + "';";
                     db.Update(sql);
 
-                    db.Delete("tags", "tag='" + deleted[i] + "' AND id=" + id);
+                    db.Delete("tags", "tag='" + deleted[i] + "' AND q_id=" + id);
                 }
 
                 for (int i = 0; i < added.Length; i++)
